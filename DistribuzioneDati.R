@@ -1,9 +1,11 @@
 library(xlsx)
+library(tidyverse)
+path <- "G:\\Dazza\\Università\\I ANNO M\\CodeSmell-DesignPattern-Experiment\\"
 
-dataA <- read.xlsx("D:\\Test\\Results.xlsx", sheetIndex = 2, rowIndex = 1:9)
-dataB <- read.xlsx("D:\\Test\\Results.xlsx", sheetIndex = 2, rowIndex = 10:18)
-dataC <- read.xlsx("D:\\Test\\Results.xlsx", sheetIndex = 2, rowIndex = 19:27)
-dataD <- read.xlsx("D:\\Test\\Results.xlsx", sheetIndex = 2, rowIndex = 28:36)
+dataA <- read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 2, rowIndex = 1:9)
+dataB <- read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 2, rowIndex = 10:18)
+dataC <- read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 2, rowIndex = 19:27)
+dataD <- read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 2, rowIndex = 28:36)
 
 xVector <- c("A", "B", "C", "D")
 
@@ -42,4 +44,9 @@ statsA
 statsB 
 statsC 
 statsD
+
+dfTest <- data.frame(read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 3, colIndex = 1,3))
+
+
+
 
