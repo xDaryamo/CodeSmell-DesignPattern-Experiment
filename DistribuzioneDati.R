@@ -45,8 +45,52 @@ statsB
 statsC 
 statsD
 
-dfTest <- data.frame(read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 3, colIndex = 1,3))
+dfc1 <- read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 3, colIndex = 1)
+dfc2 <- read.xlsx(paste(path,"Results.xlsx", sep = ""), sheetIndex = 3, colIndex = 3)
+dfTest <- data.frame(dfc1,dfc2)
 
 
 
+for (gruppo in xVector) {
+  dati_gruppo <- dfTest$Corrette.Comprensione[dfTest$Gruppo == gruppo]  # Seleziona i dati per il gruppo corrente
+  shapiro_test <- shapiro.test(dati_gruppo)  # Esegui il test di Shapiro-Wilk
+  print(paste("Gruppo", gruppo, ": p-value =", shapiro_test$p.value))  # Stampa il p-value
+}
+
+
+dfTest$log_trasformati <- log(dfTest$Corrette.Comprensione)
+
+for (gruppo in xVector) {
+  dati_gruppo <- dfTest$log_trasformati[dfTest$Gruppo == gruppo]  # Seleziona i dati per il gruppo corrente
+  shapiro_test <- shapiro.test(dati_gruppo)  # Esegui il test di Shapiro-Wilk
+  print(paste("Gruppo", gruppo, ": p-value =", shapiro_test$p.value))  # Stampa il p-value
+}
+
+dfTest$radice_quadrata <- sqrt(dfTest$Corrette.Comprensione)
+
+for (gruppo in xVector) {
+  dati_gruppo <- dfTest$radice_quadrata[dfTest$Gruppo == gruppo]  # Seleziona i dati per il gruppo corrente
+  shapiro_test <- shapiro.test(dati_gruppo)  # Esegui il test di Shapiro-Wilk
+  print(paste("Gruppo", gruppo, ": p-value =", shapiro_test$p.value))  # Stampa il p-value
+}
+
+dfTest$esponenziale <- exp(dfTest$Corrette.Comprensione)
+
+for (gruppo in xVector) {
+  dati_gruppo <- dfTest$esponenziale[dfTest$Gruppo == gruppo]  # Seleziona i dati per il gruppo corrente
+  shapiro_test <- shapiro.test(dati_gruppo)  # Esegui il test di Shapiro-Wilk
+  print(paste("Gruppo", gruppo, ": p-value =", shapiro_test$p.value))  # Stampa il p-value
+}
+
+dfTest$inversa <- 1 / dfTest$Corrette.Comprensione
+
+for (gruppo in xVector) {
+  dati_gruppo <- dfTest$inversa[dfTest$Gruppo == gruppo]  # Seleziona i dati per il gruppo corrente
+  shapiro_test <- shapiro.test(dati_gruppo)  # Esegui il test di Shapiro-Wilk
+  print(paste("Gruppo", gruppo, ": p-value =", shapiro_test$p.value))  # Stampa il p-value
+}
+kruskal.test(Corrette.Comprensione ~ Gruppo, data = dfTest)
+                 
+anova <- aov(Corrette.Comprensione ~ Gruppo, data = dfTest)
+summary(anova)[[1]][["Pr(>F)"]][1]
 
