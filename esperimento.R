@@ -3,27 +3,30 @@ library(ggplot2)
 library(dplyr)
 library(tidyverse)
 
-
 #percorso assoluto root del progetto
-path <- "G:\\Dazza\\Università\\I ANNO M\\CodeSmell-DesignPattern-Experiment\\"
+path <- "C:\\Users\\Xzeni\\OneDrive\\Desktop\\CodeSmell-DesignPattern-Experiment-master\\"
 
 #caricamento del dataset
 df <- read_excel(paste0(path,"risultati.xlsx"), sheet = "dataset")
 
+gruppi <- c("A", "B", "C", "D")
+
+variabili_dipendenti <- c("Rapporto_Comprensione", "Rapporto_Manutenzione", "Effort_Medio_Comprensione", "Effort_Medio_Manutenzione")
 
 # Statistiche descrittive
-summary(df$Corrette_Manutenzione)
-summary(df$Corrette_Comprensione)
+summary(df$Rapporto_Manutenzione)
+summary(df$Rapporto_Comprensione)
 summary(df$Effort_Medio_Comprensione)
 summary(df$Effort_Medio_Manutenzione)
 
+#Distribuzione dei dati
 
 # Boxplot per le risposte corrette nel task di manutenzione
-boxplot(Corrette_Manutenzione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Numero di risposte corrette - Manutenzione")
+boxplot(Rapporto_Manutenzione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Percentuale risposte corrette - Manutenzione")
 
 
 # Boxplot per le risposte corrette nel task di comprensione
-boxplot(Corrette_Comprensione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Numero di risposte corrette - Comprensione")
+boxplot(Rapporto_Comprensione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Percentuale risposte corrette - Comprensione")
 
 # Boxplot per l'effort medio nel task di manutenzione
 boxplot(Effort_Medio_Manutenzione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Effort medio (minuti) - Manutenzione")
@@ -32,12 +35,7 @@ boxplot(Effort_Medio_Manutenzione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "
 boxplot(Effort_Medio_Comprensione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Effort medio (minuti) - Comprensione")
 
 
-
-gruppi <- c("A", "B", "C", "D")
-
-variabili_dipendenti <- c("Corrette_Comprensione", "Corrette_Manutenzione", "Effort_Medio_Comprensione", "Effort_Medio_Manutenzione")
-
-#Analisi normalità dei dati
+#Precision
 
 # Per ogni gruppo
 for (gruppo in gruppi) {
@@ -77,9 +75,8 @@ for (var in unique(variabili_dipendenti)) {
 }
 
 
-
 #Solo Effort_Medio_Comprensione ci permette di rigettare l'ipotesi nulla, indaghiamo ulteriormente
-altre_variabili <- c("Corrette_Comprensione", "Corrette_Manutenzione", "Effort_Medio_Manutenzione")  # Escludi la variabile "EffortComprensione")
+altre_variabili <- c("Rapporto_Comprensione", "Rapporto_Manutenzione", "Effort_Medio_Manutenzione")  # Escludi la variabile "EffortComprensione")
 
 # Ciclo per confrontare "Effort_Medio_Comprensione" con tutte le altre variabili
 
@@ -96,10 +93,3 @@ for (var in altre_variabili) {
   print(result)
   print("-------------------------------------------")
 }
-
-
-
-anova <- aov(Effort_Medio_Comprensione ~ Gruppo, data = df)
-summary(anova)
-anova <- aov(Effort_Medio_Manutenzione ~ Gruppo, data = df)
-summary(anova)
