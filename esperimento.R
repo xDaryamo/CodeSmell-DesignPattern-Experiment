@@ -14,16 +14,20 @@ gruppi <- c("A", "B", "C", "D")
 variabili_dipendenti <- c("Rapporto_Comprensione", "Rapporto_Manutenzione", "Effort_Medio_Comprensione", "Effort_Medio_Manutenzione")
 
 # Statistiche descrittive
-summary(df$Rapporto_Manutenzione)
-summary(df$Rapporto_Comprensione)
-summary(df$Effort_Medio_Comprensione)
-summary(df$Effort_Medio_Manutenzione)
+by(df$Rapporto_Comprensione, df$Gruppo, summary)
+by(df$Rapporto_Manutenzione, df$Gruppo, summary)
+by(df$Effort_Medio_Comprensione, df$Gruppo, summary)
+by(df$Effort_Medio_Manutenzione, df$Gruppo, summary)
+
+by(df$Rapporto_Comprensione, df$Gruppo, sd)
+by(df$Rapporto_Manutenzione, df$Gruppo, sd)
+by(df$Effort_Medio_Comprensione, df$Gruppo, sd)
+by(df$Effort_Medio_Manutenzione, df$Gruppo, sd)
 
 #Distribuzione dei dati
 
 # Boxplot per le risposte corrette nel task di manutenzione
 boxplot(Rapporto_Manutenzione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Percentuale risposte corrette - Manutenzione")
-
 
 # Boxplot per le risposte corrette nel task di comprensione
 boxplot(Rapporto_Comprensione ~ Gruppo, data = df, xlab = "Gruppo", ylab = "Percentuale risposte corrette - Comprensione")
@@ -74,22 +78,19 @@ for (var in unique(variabili_dipendenti)) {
   cat("-------------------------------------------\n\n")
 }
 
+variabili <- c("Rapporto_Comprensione", "Rapporto_Manutenzione", "Effort_Medio_Comprensione")  # Escludi Effort_Medio_Manutenzione")
 
-#Solo Effort_Medio_Comprensione ci permette di rigettare l'ipotesi nulla, indaghiamo ulteriormente
-altre_variabili <- c("Rapporto_Comprensione", "Rapporto_Manutenzione", "Effort_Medio_Manutenzione")  # Escludi la variabile "EffortComprensione")
+library(FSA)
 
-# Ciclo per confrontare "Effort_Medio_Comprensione" con tutte le altre variabili
-
-for (var in altre_variabili) {
-  result <- combn(unique(df$Gruppo), 2, function(groups) {
-    test_result <- wilcox.test(
-      subset(df, Gruppo == groups[1])[[var]],
-      subset(df, Gruppo == groups[2])[[var]]
-    )
-    c(Group1 = groups[1], Group2 = groups[2], p_value = test_result$p.value)
-  }, simplify = FALSE)
+for (var in variabili) {
   
+  # Confronto a coppie tra i gruppi
+ 
+  dunn_result <-  dunnTest(df[[var]], g =  df$Gruppo,
+                               method="bonferroni")
+  
+  # Visualizzazione dei risultati dei confronti a coppie
   print(paste("Variabile:", var))
-  print(result)
+  print(dunn_result)
   print("-------------------------------------------")
 }
